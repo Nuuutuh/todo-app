@@ -1,0 +1,89 @@
+<template>
+  <body>
+  <h1>TO DO LIST</h1>
+  <input type="date" id="birthday" name="birthday">
+  <form @submit.prevent="addNewTodo">
+    <label>ADD NEW TO DO</label>
+    <br /><br />
+    <input v-model="newTodo" name="newTodo" autocomplete="off">
+    <button>ADD</button>
+  </form>
+  <h2>TASK</h2>
+  <div class = "task">
+    <ul>
+      <li v-for="(todo, index) in todos" :key="index">
+        <input type="checkbox" v-model="todo.completed">
+        <span :class="{ 'completed-task': todo.completed }">{{ todo.text }}</span>
+        <button @click="editTodo(index)">Edit</button>
+        <button @click="deleteTodo(index)">Delete</button>
+      </li>
+    </ul>
+  </div>
+
+  <div class = "wrapper">
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+		<span></span>
+</div>
+<div class="banner">
+	<div class="content">
+	</div>
+</div>
+</body>
+</template>
+<script lang="ts">
+import { defineComponent, reactive, toRef, ref } from 'vue';
+
+interface Todo {
+  text: string;
+  completed: boolean;
+}
+
+export default defineComponent({
+  setup() {
+    
+    const newTodo = ref('');
+    const todos = ref<Todo[]>([]);
+
+    function addNewTodo() {
+      if (newTodo.value.trim() !== '') {
+        todos.value.push({ text: newTodo.value, completed: false });
+        newTodo.value = '';
+      }
+    }
+
+
+    function deleteTodo(index: number) {
+      todos.value.splice(index, 1);
+    }
+
+    function editTodo(index: number) {
+      const updatedText = prompt('Enter the updated task:', todos.value[index].text);
+      if (updatedText) {
+        todos.value[index].text = updatedText;
+      }
+    }
+
+    return {
+      newTodo,
+      todos,
+      addNewTodo,
+      deleteTodo,
+      editTodo
+    };
+  },
+});
+</script>
+<style>
+.completed-task {
+  text-decoration: line-through;
+}
+
+</style>
